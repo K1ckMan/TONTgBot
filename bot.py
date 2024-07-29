@@ -2510,12 +2510,19 @@ def command_timediff(message):
     bot.send_message(config.tg, text=_("Can't get top processes"), reply_markup=markuplinux)
 # /Top processes
 
+# Функция для разбивки длинных сообщений на части
+def send_long_message(chat_id, message):
+    max_length = 4096
+    for i in range(0, len(message), max_length):
+        bot.send_message(chat_id, text=message[i:i + max_length])
+
+# Обработчик команды для получения информации о контейнерах
 @bot.message_handler(func=lambda message: message.text == lt_containers)
 def command_containers(message):
     try:
         bot.send_chat_action(config.tg, "typing")
         containers_info = subprocess.check_output(['docker', 'ps'], stderr=subprocess.STDOUT, encoding='utf-8')
-        bot.send_message(config.tg, text=containers_info)
+        send_long_message(config.tg, containers_info)
     except subprocess.CalledProcessError as e:
         bot.send_message(config.tg, text=f"Can't get container info: {e.output}")
     except Exception as e:
