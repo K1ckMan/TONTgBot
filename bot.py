@@ -2517,6 +2517,20 @@ def command_timediff(message):
 #         bot.send_message(chat_id, text=message[i:i + max_length])
 
 # Обработчик команды для получения информации о контейнерах
+# Функция для добавления эмодзи в зависимости от статуса
+def format_container_info(info):
+    lines = info.splitlines()
+    formatted_lines = []
+    for line in lines:
+        if 'Exited' in line:
+            formatted_lines.append(f"🚫 {line}")
+        elif 'Up' in line:
+            formatted_lines.append(f"🚅 {line}")
+        else:
+            formatted_lines.append(line)
+    return '\n'.join(formatted_lines)
+
+# Обработчик команды для получения информации о контейнерах
 @bot.message_handler(func=lambda message: message.text == lt_containers)
 def command_containers(message):
     try:
@@ -2526,7 +2540,8 @@ def command_containers(message):
             stderr=subprocess.STDOUT,
             encoding='utf-8'
         )
-        bot.send_message(config.tg, text=containers_info)
+        formatted_info = format_container_info(containers_info)
+        bot.send_message(config.tg, text=formatted_info)
     except subprocess.CalledProcessError as e:
         bot.send_message(config.tg, text=f"Can't get container info: {e.output}")
     except Exception as e:
