@@ -2514,9 +2514,8 @@ bot.message_handler(func=lambda message: message.text == lt_containers)
 def command_containers(message):
     try:
         bot.send_chat_action(config_tg, "typing")
-        containers_info = "docker ps"
-        containers_info = str(subprocess.check_output(containers_info, shell=True, encoding='utf-8'))
-        bot.send_message(config_tg, text=f"```\n{containers_info}\n```", parse_mode='Markdown')
+        bot.send_chat_action(config.tg, "typing")
+        bot.send_chat_action(config.tg, "typing")
     except Exception as e:
         bot.send_message(config_tg, text=f"Can't get container info: {e}")
 
