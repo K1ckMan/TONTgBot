@@ -2940,50 +2940,50 @@ def kill(proc_pid):
   process.kill() 
 
 # Alerts Validator node
-def AlertsNotifications():
-  td = 0
-  hch = 0
-  t,p,c = 5,2,15
-  #q = [t * p ** (i - 1) for i in range(1, c + 1)]
+# def AlertsNotifications():
+#   td = 0
+#   hch = 0
+#   t,p,c = 5,2,15
+#   #q = [t * p ** (i - 1) for i in range(1, c + 1)]
   
-  alrtprdvnr = 5
-  alrtprdmem = 5
-  alrtprdpng = 5
-  alrtprdcpu = 5
-  while True:
-    if td == 5:
-      td = 0
+#   alrtprdvnr = 5
+#   alrtprdmem = 5
+#   alrtprdpng = 5
+#   alrtprdcpu = 5
+#   while True:
+#     if td == 5:
+#       td = 0
       
-      # Check validator node running
-      try:
-        valnodecheck = str(subprocess.check_output(["pidof","validator-engine"], encoding='utf-8'))
-        alrtprdvnr =5
-      except subprocess.CalledProcessError as i:
-        if i.output != None:
-          if alrtprdvnr in config.repeattimealarmnode:
-            bot.send_message(config.tg, text="\U0001F6A8 " + _("Validator node is not running!!! Tap restart validator, to run your node"),  parse_mode="Markdown", reply_markup=markupValidator)
-            alrtprdvnr +=5
-          else:
-            alrtprdvnr +=5
-    if hch == config.balchecks:
-      hch = 0
-      try:
-        minstake = config.minstakes
-        wlt = "head -1 " + config.tk + "*.addr"
-        wlt = str(subprocess.check_output(wlt, shell = True,encoding='utf-8').rstrip())
-        acctoncli = config.ud + "/tonos-cli account " + wlt + " | grep -i 'balance' | awk '{print $2}'"
-        acctoncli = str(subprocess.check_output(acctoncli, shell = True,encoding='utf-8'))
-        acctonclibal = str(int(acctoncli) / 1000000000)
-        currentstake = "crontab -l | grep -oP 'validator_msig.sh ([0-9]+)' | awk '{print $2}'"
-        currentstake = str(subprocess.check_output(currentstake, shell = True,encoding='utf-8').rstrip())
-        if int(minstake) < int(float(acctonclibal)) < int(currentstake):
-          bot.send_message(config.tg,_("Your balance is ") + acctonclibal + " \U0001F48E\n" + _("Please change your stake ") + currentstake + " \U0001F48E " + _("because it is lower than your balance "))
-      except:
-        bot.send_message(config.tg,_("Can't fetch your balance"))
-    else:
-      hch += 5
-    time.sleep(5)
-    td += 5
+#       # Check validator node running
+#       try:
+#         valnodecheck = str(subprocess.check_output(["pidof","validator-engine"], encoding='utf-8'))
+#         alrtprdvnr =5
+#       except subprocess.CalledProcessError as i:
+#         if i.output != None:
+#           if alrtprdvnr in config.repeattimealarmnode:
+#             bot.send_message(config.tg, text="\U0001F6A8 " + _("Validator node is not running!!! Tap restart validator, to run your node"),  parse_mode="Markdown", reply_markup=markupValidator)
+#             alrtprdvnr +=5
+#           else:
+#             alrtprdvnr +=5
+#     if hch == config.balchecks:
+#       hch = 0
+#       try:
+#         minstake = config.minstakes
+#         wlt = "head -1 " + config.tk + "*.addr"
+#         wlt = str(subprocess.check_output(wlt, shell = True,encoding='utf-8').rstrip())
+#         acctoncli = config.ud + "/tonos-cli account " + wlt + " | grep -i 'balance' | awk '{print $2}'"
+#         acctoncli = str(subprocess.check_output(acctoncli, shell = True,encoding='utf-8'))
+#         acctonclibal = str(int(acctoncli) / 1000000000)
+#         currentstake = "crontab -l | grep -oP 'validator_msig.sh ([0-9]+)' | awk '{print $2}'"
+#         currentstake = str(subprocess.check_output(currentstake, shell = True,encoding='utf-8').rstrip())
+#         if int(minstake) < int(float(acctonclibal)) < int(currentstake):
+#           bot.send_message(config.tg,_("Your balance is ") + acctonclibal + " \U0001F48E\n" + _("Please change your stake ") + currentstake + " \U0001F48E " + _("because it is lower than your balance "))
+#       except:
+#         bot.send_message(config.tg,_("Can't fetch your balance"))
+#     else:
+#       hch += 5
+#     time.sleep(5)
+#     td += 5
 
 def AlertsNotificationst():
 
