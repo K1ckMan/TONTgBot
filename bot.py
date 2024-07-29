@@ -2515,6 +2515,8 @@ def command_containers(message):
     try:
         containers_info = subprocess.check_output(['docker', 'ps'], encoding='utf-8')
         bot.send_message(config_tg, text=containers_info)
+        startt = _("System start: ") + str(datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%b/%d/%Y %H:%M:%S"))
+        bot.send_message(config.tg, text=startt, reply_markup=markuplinux)
     except Exception as e:
         bot.send_message(config_tg, text=f"Can't get container info: {e}")
 
