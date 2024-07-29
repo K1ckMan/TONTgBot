@@ -2521,7 +2521,11 @@ def command_timediff(message):
 def command_containers(message):
     try:
         bot.send_chat_action(config.tg, "typing")
-        containers_info = subprocess.check_output(['docker', 'ps', '--format', '{{.Names}}: {{.Status}}'], stderr=subprocess.STDOUT, encoding='utf-8')
+        containers_info = subprocess.check_output(
+            ['docker', 'ps', '-a', '--format', '{{.Names}}: {{.Status}}'],
+            stderr=subprocess.STDOUT,
+            encoding='utf-8'
+        )
         bot.send_message(config.tg, text=containers_info)
     except subprocess.CalledProcessError as e:
         bot.send_message(config.tg, text=f"Can't get container info: {e.output}")
