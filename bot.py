@@ -2512,12 +2512,14 @@ def command_timediff(message):
 
 @bot.message_handler(func=lambda message: message.text == lt_containers)
 def command_containers(message):
-    try:
-        # Выполняем команду docker ps
-        containers_info = subprocess.check_output(['docker', 'ps'], encoding='utf-8')
-        bot.send_message(config_tg, text=f"```\n{containers_info}\n```", parse_mode='Markdown')
-    except Exception as e:
-        bot.send_message(config_tg, text=f"Can't get container info: {e}")
+  try:
+    bot.send_chat_action(config.tg, "typing")
+    pingcheck = "ping -c 5 " + config.srvping
+    pingcheck = str(subprocess.check_output(pingcheck, shell = True,encoding='utf-8'))
+    bot.send_message(config.tg, text=pingcheck, reply_markup=markuplinux)
+    historygetping("db/pingcheck.dat",30,_("ms"),_("Ping test"),"/tmp/pingcheck.png",pingcheckhist)
+  except:
+    bot.send_message(config.tg, text=_("Can't execute ping test"), reply_markup=markuplinux)
 
 # Server start date/time
 @bot.message_handler(func=lambda message: message.text == lt_starttime)
