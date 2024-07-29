@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import docker
 import os, sys
 import config
 import time
@@ -60,6 +61,8 @@ lt_ping = _("Ping test")
 lt_ping =  "\U0001F3D3 " + lt_ping
 lt_traceroute = _("Traceroute test")
 lt_traceroute =  "\U0001F9ED " + lt_traceroute
+lt_containers = _("Containers")
+lt_containers =  "\U0001F9ED " + lt_containers
 lt_topproc = _("Top processes")
 lt_topproc =  "\U0001F51D " + lt_topproc
 lt_ssvalid = _("Port check")
@@ -119,6 +122,7 @@ markup.row(validatortools,graphqltools,linuxtools)
 markuplinux = types.ReplyKeyboardMarkup()
 ping = types.KeyboardButton(lt_ping)
 traceroute = types.KeyboardButton(lt_traceroute)
+lt_containers = type.KeyboardButton(lt_containers)
 topproc = types.KeyboardButton(lt_topproc)
 ssvalid = types.KeyboardButton(lt_ssvalid)
 starttime = types.KeyboardButton(lt_starttime)
@@ -310,6 +314,27 @@ types.InlineKeyboardButton(text=_("30d"), callback_data="diskiohist_30d"))
 # InlineKeyboards
 
 # F
+
+# Docker 
+def get_docker_containers_info():
+    client = docker.from_env()
+    containers = client.containers.list(all=True)
+
+    container_info = []
+    for container in containers:
+        info = {
+            'name': container.name,
+            'status': container.status
+        }
+        container_info.append(info)
+
+    return container_info
+
+if __name__ == "__main__":
+    containers_info = get_docker_containers_info()
+    for info in containers_info:
+        print(f"Container Name: {info['name']}, Status: {info['status']}")
+# Docker
 
 # History load welcome
 def historyget(f,t,lbl,ptitle,poutf,rm):
@@ -2491,6 +2516,14 @@ def command_timediff(message):
   except:
     bot.send_message(config.tg, text=_("Can't get top processes"), reply_markup=markuplinux)
 # /Top processes
+
+@bot.message_handler(func=lambda message: message.text == lt_containers)
+def command_containers(message):
+    try:
+        containers_info = get_docker_containers_info()
+        bot.send_message(config_tg, text=containers_info)
+    except Exception as e:
+        bot.send_message(config_tg, text=f"Can't get container info: {e}")
 
 # Server start date/time
 @bot.message_handler(func=lambda message: message.text == lt_starttime)
