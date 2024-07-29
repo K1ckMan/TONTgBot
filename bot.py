@@ -325,14 +325,8 @@ def get_docker_containers_info():
         container_info.append(info)
     return '\n'.join(container_info)
 
-# Обработчик команды для получения информации о контейнерах #
-@bot.message_handler(func=lambda message: message.text == lt_containers)
-def command_containers(message):
-    try:
-        containers_info = get_docker_containers_info()
-        bot.send_message(config_tg, text=containers_info) 
-    except Exception as e:
-        bot.send_message(config_tg, text=f"Can't get container info: {e}")
+# Обработчик команды для получения информации о контейнерах
+
 # Docker
 
 # History load welcome
@@ -2519,8 +2513,9 @@ def command_timediff(message):
 @bot.message_handler(func=lambda message: message.text == lt_containers)
 def command_containers(message):
     try:
-        containers_info = get_docker_containers_info()
-        bot.send_message(config_tg, text=containers_info)
+        # Выполняем команду docker ps
+        containers_info = subprocess.check_output(['docker', 'ps'], encoding='utf-8')
+        bot.send_message(config_tg, text=f"```\n{containers_info}\n```", parse_mode='Markdown')
     except Exception as e:
         bot.send_message(config_tg, text=f"Can't get container info: {e}")
 
