@@ -3130,8 +3130,8 @@ def monitoringdiskio():
       td += 5
 
 if __name__ == '__main__':
-  AlertsNotifications = threading.Thread(target = AlertsNotifications)
-  AlertsNotifications.start()
+  # AlertsNotifications = threading.Thread(target = AlertsNotifications)
+  # AlertsNotifications.start()
 
   AlertsNotificationst = threading.Thread(target = AlertsNotificationst)
   AlertsNotificationst.start()
