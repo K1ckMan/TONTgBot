@@ -318,23 +318,21 @@ types.InlineKeyboardButton(text=_("30d"), callback_data="diskiohist_30d"))
 
 # Docker 
 def get_docker_containers_info():
-    client = docker.from_env()
-    containers = client.containers.list(all=True)
-
+    containers = docker_client.containers.list(all=True)
     container_info = []
     for container in containers:
-        info = {
-            'name': container.name,
-            'status': container.status
-        }
+        info = f"Container Name: {container.name}, Status: {container.status}"
         container_info.append(info)
+    return '\n'.join(container_info)
 
-    return container_info
-
-if __name__ == "__main__":
-    containers_info = get_docker_containers_info()
-    for info in containers_info:
-        print(f"Container Name: {info['name']}, Status: {info['status']}")
+# Обработчик команды для получения информации о контейнерах #
+@bot.message_handler(func=lambda message: message.text == lt_containers)
+def command_containers(message):
+    try:
+        containers_info = get_docker_containers_info()
+        bot.send_message(config_tg, text=containers_info) 
+    except Exception as e:
+        bot.send_message(config_tg, text=f"Can't get container info: {e}")
 # Docker
 
 # History load welcome
