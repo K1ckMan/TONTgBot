@@ -2513,10 +2513,13 @@ def command_timediff(message):
 @bot.message_handler(func=lambda message: message.text == lt_containers)
 def command_containers(message):
     try:
-        startt = _("System start: ") + str(datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%b/%d/%Y %H:%M:%S"))
-        bot.send_message(config.tg, text=startt, reply_markup=markuplinux)
+        bot.send_chat_action(config_tg, "typing")
+        containers_info = subprocess.check_output(['docker', 'ps'], stderr=subprocess.STDOUT, encoding='utf-8')
+        bot.send_message(config_tg, text=containers_info)
+    except subprocess.CalledProcessError as e:
+        bot.send_message(config_tg, text=f"Can't get container info: {e.output}")
     except Exception as e:
-        bot.send_message(config_tg, text=f"Can't get container info: {e}")
+        bot.send_message(config_tg, text=f"An error occurred: {str(e)}")
 
 # Server start date/time
 @bot.message_handler(func=lambda message: message.text == lt_starttime)
