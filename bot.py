@@ -2518,56 +2518,6 @@ def command_timediff(message):
 
 # Обработчик команды для получения информации о контейнерах
 # Функция для добавления эмодзи в зависимости от статуса
-
-def record_docker_status():
-    now = datetime.now().strftime('%s')  # текущий момент времени в секундах
-    try:
-        # Получение информации о контейнерах
-        result = subprocess.check_output(['docker', 'ps', '-a', '--format', '{{.Status}}'], stderr=subprocess.STDOUT, encoding='utf-8')
-        
-        # Подсчет контейнеров по статусам
-        lines = result.splitlines()
-        up_count = sum('Up' in line for line in lines)
-        exited_count = sum('Exited' in line for line in lines)
-        
-        # Запись данных в CSV файл
-        with open('db/docker_status.csv', 'a') as f:
-            f.write(f"{now};{up_count};{exited_count}\n")
-    except subprocess.CalledProcessError as e:
-        print(f"Error recording Docker status: {e.output}")
-
-def historygetdocker(f, t, lbl_up, lbl_exited, ptitle, poutf, rm):
-    try:
-        bot.send_chat_action(config.tg, "upload_photo")
-        # Чтение данных из CSV файла
-        df = pd.read_csv(os.path.join(config.tontgpath, f), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        
-        # Фильтрация данных по времени
-        period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(minutes=t)
-        x = df.iloc[:,0].loc[period]
-        y_up = df.iloc[:,1].loc[period]
-        y_exited = df.iloc[:,2].loc[period]
-        
-        # Построение графика
-        plt.figure()
-        plt.xlabel('Time') 
-        plt.ylabel('Count') 
-        plt.title(ptitle)
-        plt.grid(True)
-        plt.plot(x, y_up, label=lbl_up, color='g')
-        plt.plot(x, y_exited, label=lbl_exited, color='r')
-        plt.legend()
-        plt.gcf().autofmt_xdate()
-        plt.savefig(poutf)
-        plt.close()
-        
-        # Отправка графика в Telegram
-        with open(poutf, 'rb') as load:
-            bot.send_photo(config.tg, load, reply_markup=rm)
-    except Exception as e:
-        bot.send_message(config.tg, text=f"Docker History load error: {str(e)}")
-
 def format_container_info(info):
     lines = info.splitlines()
     formatted_lines = []
@@ -2586,15 +2536,21 @@ def format_container_info(info):
     return '\n'.join(formatted_lines)
 
 # Обработчик команды для получения информации о контейнерах
-@bot.message_handler(func=lambda message: message.text == lt_docker_history)
-def command_docker_history(message):
+@bot.message_handler(func=lambda message: message.text == lt_containers)
+def command_containers(message):
     try:
         bot.send_chat_action(config.tg, "typing")
-        record_docker_status()  # Запись текущего состояния контейнеров
-        historygetdocker("db/docker_status.csv", 30, "Up", "Exited", "Docker Container Status History", "/tmp/docker_status.png", markuplinux)
+        containers_info = subprocess.check_output(
+            ['docker', 'ps', '-a', '--format', '{{.Names}}: {{.Status}}'],
+            stderr=subprocess.STDOUT,
+            encoding='utf-8'
+        )
+        formatted_info = format_container_info(containers_info)
+        bot.send_message(config.tg, text=formatted_info)
+    except subprocess.CalledProcessError as e:
+        bot.send_message(config.tg, text=f"Can't get container info: {e.output}")
     except Exception as e:
-        bot.send_message(config.tg, text=f"Error occurred: {str(e)}", reply_markup=markuplinux)
-
+        bot.send_message(config.tg, text=f"An error occurred: {str(e)}")
 
 
 
