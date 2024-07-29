@@ -2525,7 +2525,11 @@ def format_container_info(info):
         if 'Exited' in line:
             formatted_lines.append(f"🚫 {line}")
         elif 'Up' in line:
-            formatted_lines.append(f"🚅 {line}")
+            formatted_lines.append(f"✅ {line}")
+        elif 'unhealthy' in line:
+            formatted_lines.append(f"💉 {line}")
+        elif 'healthy' in line:
+            formatted_lines.append(f"💊 {line}")
         else:
             formatted_lines.append(line)
     return '\n'.join(formatted_lines)
@@ -2546,6 +2550,7 @@ def command_containers(message):
         bot.send_message(config.tg, text=f"Can't get container info: {e.output}")
     except Exception as e:
         bot.send_message(config.tg, text=f"An error occurred: {str(e)}")
+
 
 # Server start date/time
 @bot.message_handler(func=lambda message: message.text == lt_starttime)
