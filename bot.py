@@ -92,8 +92,8 @@ lt_currentstake =  "\U0001F522 " + lt_currentstake
 lt_updatestake = _("Update stake")
 lt_updatestake = "\U00002195\U0000FE0F " + lt_updatestake
 #----
-lt_andorraspdt =  _("Andorra")
-lt_andorraspdt =  "\U0001F1E6\U0001F1E9 " + lt_andorraspdt
+lt_andorraspdt =  _("Latvia")
+lt_andorraspdt =  "\U0001f1f1\U0001f1fb " + lt_andorraspdt
 lt_backlinux =  _("Back to Linux tools")
 lt_backlinux = "\U0001F519 " + lt_backlinux
 # /Menu vars
