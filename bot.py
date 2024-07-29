@@ -2627,7 +2627,7 @@ def command_speedtest(message):
 def command_testspeed_andorra(message):
   try:
     bot.send_chat_action(config.tg, "typing")
-    testspeedcmd = "python3 " + config.tontgpath + "/speedtest-cli --share --server 2530 | grep -i 'Share results' | awk '{print $3}' | wget -i - -O /tmp/speedtestcheck.png"
+    testspeedcmd = "python3 " + config.tontgpath + "/speedtest-cli --share --server 1348 | grep -i 'Share results' | awk '{print $3}' | wget -i - -O /tmp/speedtestcheck.png"
     testspeed =str(subprocess.call(testspeedcmd, shell = True,encoding='utf-8'))
     bot.send_chat_action(config.tg, "upload_photo")
     testspeedfile = open('/tmp/speedtestcheck.png', 'rb')
