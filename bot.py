@@ -317,13 +317,13 @@ types.InlineKeyboardButton(text=_("30d"), callback_data="diskiohist_30d"))
 # F
 
 # Docker 
-def get_docker_containers_info():
-    containers = docker_client.containers.list(all=True)
-    container_info = []
-    for container in containers:
-        info = f"Container Name: {container.name}, Status: {container.status}"
-        container_info.append(info)
-    return '\n'.join(container_info)
+# def get_docker_containers_info():
+#     containers = docker_client.containers.list(all=True)
+#     container_info = []
+#     for container in containers:
+#         info = f"Container Name: {container.name}, Status: {container.status}"
+#         container_info.append(info)
+#     return '\n'.join(container_info)
 
 # Обработчик команды для получения информации о контейнерах
 
